@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from sqlalchemy import text
 
-from app.infrastructure.database import SessionLocal
+from app.infrastructure.database import Base, SessionLocal, engine
+from app.models import course, enrollment, user
+
+
+Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
