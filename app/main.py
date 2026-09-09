@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from sqlalchemy import text
 
+from app.schemas.user_schema import UserCreate
+from app.schemas.course_schema import CourseCreate
 from app.infrastructure.database import Base, SessionLocal, engine
 from app.models import course, enrollment, user
 
@@ -28,3 +30,11 @@ def database_test():
         }
     finally:
         db.close()
+
+@app.post("/test-user")
+def test_user(user: UserCreate):
+    return user
+
+@app.post("/test-course")
+def test_course(course: CourseCreate):
+    return course
