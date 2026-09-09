@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.infrastructure.database import get_db
 from app.schemas.user_schema import (
     UserCreate,
+    UserCoursesResponse,
     UserResponse,
     UserUpdate
 )
@@ -40,6 +41,18 @@ def get_users(
 ):
     return user_service.get_users(db)
 
+@router.get(
+    "/{user_id}/courses",
+    response_model=UserCoursesResponse
+)
+def get_user_courses(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    return user_service.get_user_courses(
+        db,
+        user_id
+    )
 
 @router.get(
     "/{user_id}",

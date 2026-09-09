@@ -70,3 +70,25 @@ def delete_user(db: Session, user_id: int):
     user_repository.delete_user(db, user)
 
     return True
+
+def get_user_courses(db: Session, user_id: int):
+    user = user_repository.get_user_by_id(
+        db,
+        user_id
+    )
+
+    if not user:
+        raise AppError("User not found", 404)
+
+    courses = []
+
+    for enrollment in user.enrollments:
+        courses.append(enrollment.course)
+
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "created_at": user.created_at,
+        "courses": courses
+    }
