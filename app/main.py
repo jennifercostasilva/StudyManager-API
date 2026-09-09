@@ -7,6 +7,7 @@ from app.controllers import (
 )
 from app.infrastructure.database import Base, engine
 from app.models import course, enrollment, user
+from app.exceptions.handlers import AppError, app_error_handler
 
 
 Base.metadata.create_all(bind=engine)
@@ -15,6 +16,11 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="StudyManager API",
     description="API para gerenciamento de usuários, cursos e matrículas"
+)
+
+app.add_exception_handler(
+    AppError,
+    app_error_handler
 )
 
 

@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.infrastructure.database import get_db
-from app.schemas.course_schema import CourseCreate, CourseResponse, CourseUpdate
+from app.schemas.course_schema import (
+    CourseCreate,
+    CourseResponse,
+    CourseUpdate
+)
 from app.services import course_service
 
 
@@ -45,16 +49,10 @@ def get_course(
     course_id: int,
     db: Session = Depends(get_db)
 ):
-    try:
-        return course_service.get_course(
-            db,
-            course_id
-        )
-    except ValueError as error:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(error)
-        )
+    return course_service.get_course(
+        db,
+        course_id
+    )
 
 
 @router.put(
@@ -66,17 +64,11 @@ def update_course(
     course_data: CourseUpdate,
     db: Session = Depends(get_db)
 ):
-    try:
-        return course_service.update_course(
-            db,
-            course_id,
-            course_data
-        )
-    except ValueError as error:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(error)
-        )
+    return course_service.update_course(
+        db,
+        course_id,
+        course_data
+    )
 
 
 @router.delete(
@@ -87,13 +79,7 @@ def delete_course(
     course_id: int,
     db: Session = Depends(get_db)
 ):
-    try:
-        course_service.delete_course(
-            db,
-            course_id
-        )
-    except ValueError as error:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(error)
-        )
+    course_service.delete_course(
+        db,
+        course_id
+    )

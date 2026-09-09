@@ -1,11 +1,15 @@
 from sqlalchemy.orm import Session
 
+from app.exceptions.handlers import AppError
 from app.repositories import course_repository
 from app.schemas.course_schema import CourseCreate, CourseUpdate
 
 
 def create_course(db: Session, course_data: CourseCreate):
-    return course_repository.create_course(db, course_data)
+    return course_repository.create_course(
+        db,
+        course_data
+    )
 
 
 def get_courses(db: Session):
@@ -13,10 +17,13 @@ def get_courses(db: Session):
 
 
 def get_course(db: Session, course_id: int):
-    course = course_repository.get_course_by_id(db, course_id)
+    course = course_repository.get_course_by_id(
+        db,
+        course_id
+    )
 
     if not course:
-        raise ValueError("Course not found")
+        raise AppError("Course not found", 404)
 
     return course
 
@@ -26,10 +33,13 @@ def update_course(
     course_id: int,
     course_data: CourseUpdate
 ):
-    course = course_repository.get_course_by_id(db, course_id)
+    course = course_repository.get_course_by_id(
+        db,
+        course_id
+    )
 
     if not course:
-        raise ValueError("Course not found")
+        raise AppError("Course not found", 404)
 
     return course_repository.update_course(
         db,
@@ -39,11 +49,17 @@ def update_course(
 
 
 def delete_course(db: Session, course_id: int):
-    course = course_repository.get_course_by_id(db, course_id)
+    course = course_repository.get_course_by_id(
+        db,
+        course_id
+    )
 
     if not course:
-        raise ValueError("Course not found")
+        raise AppError("Course not found", 404)
 
-    course_repository.delete_course(db, course)
+    course_repository.delete_course(
+        db,
+        course
+    )
 
     return True

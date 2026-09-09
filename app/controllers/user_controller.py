@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.infrastructure.database import get_db
-from app.schemas.user_schema import UserCreate, UserResponse, UserUpdate
+from app.schemas.user_schema import (
+    UserCreate,
+    UserResponse,
+    UserUpdate
+)
 from app.services import user_service
 
 
@@ -21,13 +25,10 @@ def create_user(
     user_data: UserCreate,
     db: Session = Depends(get_db)
 ):
-    try:
-        return user_service.create_user(db, user_data)
-    except ValueError as error:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=str(error)
-        )
+    return user_service.create_user(
+        db,
+        user_data
+    )
 
 
 @router.get(
@@ -48,13 +49,10 @@ def get_user(
     user_id: int,
     db: Session = Depends(get_db)
 ):
-    try:
-        return user_service.get_user(db, user_id)
-    except ValueError as error:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(error)
-        )
+    return user_service.get_user(
+        db,
+        user_id
+    )
 
 
 @router.put(
@@ -66,24 +64,11 @@ def update_user(
     user_data: UserUpdate,
     db: Session = Depends(get_db)
 ):
-    try:
-        return user_service.update_user(
-            db,
-            user_id,
-            user_data
-        )
-    except ValueError as error:
-        message = str(error)
-
-        if message == "User not found":
-            status_code = status.HTTP_404_NOT_FOUND
-        else:
-            status_code = status.HTTP_409_CONFLICT
-
-        raise HTTPException(
-            status_code=status_code,
-            detail=message
-        )
+    return user_service.update_user(
+        db,
+        user_id,
+        user_data
+    )
 
 
 @router.delete(
@@ -94,10 +79,7 @@ def delete_user(
     user_id: int,
     db: Session = Depends(get_db)
 ):
-    try:
-        user_service.delete_user(db, user_id)
-    except ValueError as error:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(error)
-        )
+    user_service.delete_user(
+        db,
+        user_id
+    )

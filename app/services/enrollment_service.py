@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 
+from app.exceptions.handlers import AppError
 from app.repositories import (
     course_repository,
     enrollment_repository,
@@ -18,7 +19,7 @@ def create_enrollment(
     )
 
     if not user:
-        raise ValueError("User not found")
+        raise AppError("User not found", 404)
 
     course = course_repository.get_course_by_id(
         db,
@@ -26,7 +27,7 @@ def create_enrollment(
     )
 
     if not course:
-        raise ValueError("Course not found")
+        raise AppError("Course not found", 404)
 
     existing_enrollment = enrollment_repository.get_enrollment(
         db,
@@ -35,7 +36,10 @@ def create_enrollment(
     )
 
     if existing_enrollment:
-        raise ValueError("User already enrolled in this course")
+        raise AppError(
+            "User already enrolled in this course",
+            409
+        )
 
     return enrollment_repository.create_enrollment(
         db,

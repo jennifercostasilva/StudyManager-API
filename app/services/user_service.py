@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 
+from app.exceptions.handlers import AppError
 from app.repositories import user_repository
 from app.schemas.user_schema import UserCreate, UserUpdate
 
@@ -11,7 +12,7 @@ def create_user(db: Session, user_data: UserCreate):
     )
 
     if existing_user:
-        raise ValueError("Email already registered")
+        raise AppError("Email already registered", 409)
 
     return user_repository.create_user(db, user_data)
 
@@ -24,16 +25,23 @@ def get_user(db: Session, user_id: int):
     user = user_repository.get_user_by_id(db, user_id)
 
     if not user:
-        raise ValueError("User not found")
+        raise AppError("User not found", 404)
 
     return user
 
 
-def update_user(db: Session, user_id: int, user_data: UserUpdate):
-    user = user_repository.get_user_by_id(db, user_id)
+def update_user(
+    db: Session,
+    user_id: int,
+    user_data: UserUpdate
+):
+    user = user_repository.get_user_by_id(
+        db,
+        user_id
+    )
 
     if not user:
-        raise ValueError("User not found")
+        raise AppError("User not found", 404)
 
     user_with_email = user_repository.get_user_by_email(
         db,
@@ -41,7 +49,7 @@ def update_user(db: Session, user_id: int, user_data: UserUpdate):
     )
 
     if user_with_email and user_with_email.id != user_id:
-        raise ValueError("Email already registered")
+        raise AppError("Email already registered", 409)
 
     return user_repository.update_user(
         db,
@@ -51,10 +59,13 @@ def update_user(db: Session, user_id: int, user_data: UserUpdate):
 
 
 def delete_user(db: Session, user_id: int):
-    user = user_repository.get_user_by_id(db, user_id)
+    user = user_repository.get_user_by_id(
+        db,
+        user_id
+    )
 
     if not user:
-        raise ValueError("User not found")
+        raise AppError("User not found", 404)
 
     user_repository.delete_user(db, user)
 
