@@ -1,40 +1,30 @@
 from fastapi import FastAPI
-from sqlalchemy import text
 
-from app.schemas.user_schema import UserCreate
-from app.schemas.course_schema import CourseCreate
-from app.infrastructure.database import Base, SessionLocal, engine
+from app.controllers import (
+    course_controller,
+    enrollment_controller,
+    user_controller
+)
+from app.infrastructure.database import Base, engine
 from app.models import course, enrollment, user
 
 
 Base.metadata.create_all(bind=engine)
 
 
-app = FastAPI()
+app = FastAPI(
+    title="StudyManager API",
+    description="API para gerenciamento de usuários, cursos e matrículas"
+)
+
+
+app.include_router(user_controller.router)
+app.include_router(course_controller.router)
+app.include_router(enrollment_controller.router)
 
 
 @app.get("/")
 def home():
-    return {"message": "StudyManager API"}
-
-
-@app.get("/database-test")
-def database_test():
-    db = SessionLocal()
-
-    try:
-        db.execute(text("SELECT 1"))
-
-        return {
-            "message": "Conexão com o banco funcionando"
-        }
-    finally:
-        db.close()
-
-@app.post("/test-user")
-def test_user(user: UserCreate):
-    return user
-
-@app.post("/test-course")
-def test_course(course: CourseCreate):
-    return course
+    return {
+        "message": "StudyManager API funcionando"
+    }
