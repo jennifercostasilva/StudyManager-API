@@ -141,6 +141,9 @@ http://127.0.0.1:8000/docs
 
 O projeto utiliza SQLite como banco de dados e SQLAlchemy como ORM. O arquivo do banco é criado localmente durante a execução da aplicação.
 
+## Repositório no GitHub
+https://github.com/jennifercostasilva/StudyManager-API
+
 ## Autor
 
 Jennifer
