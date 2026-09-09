@@ -1,4 +1,8 @@
 from fastapi import FastAPI
+from sqlalchemy import text
+
+from app.infrastructure.database import SessionLocal
+
 
 app = FastAPI()
 
@@ -6,3 +10,17 @@ app = FastAPI()
 @app.get("/")
 def home():
     return {"message": "StudyManager API"}
+
+
+@app.get("/database-test")
+def database_test():
+    db = SessionLocal()
+
+    try:
+        db.execute(text("SELECT 1"))
+
+        return {
+            "message": "Conexão com o banco funcionando"
+        }
+    finally:
+        db.close()
